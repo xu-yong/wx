@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+.pop-bg{background: #000; width:100%; height:100%; opacity: 0.2; filter: alpha(opacity:20)\9;position: absolute;top: 0;left: 0; z-index: 20;}
+.pop{ box-shadow:5px 5px 20px rgba(0,0,0,0.4);}
+.form{width:490px;}
+.confirm{width:435px;}
+.alert{width:440px;}
+.pop-box{ border-radius:5px;  background:#FFF; border:1px solid #d6d6d6; position:relative; }
+.pop .title{ width:100%;  background:#F7FAFD; height:40px; border-radius:5px 5px 0px 0px; position:relative;}
+.pop .title h3{ font-size:14px; line-height:40px; padding-left:10px; float:left;font-weight: bold;}
+.btn-close{ position:absolute; right:12px; top:8px; width:24px; height:24px;background: url(../images/common/icon_dialog.png) no-repeat scroll 0 0 rgba(0, 0, 0, 0); line-height:0px; font-size:0px;}
+.btn-close:hover{background-position: 0px -25px;}
+.pop-body{ background:#FFF; padding:0px 15px; border-radius:0px 0px 5px 5px; }
+.pop .info{ padding:20px 0px;}
+.pop .btn{padding:20px 0px; margin: 0 auto;text-align:center;}
+.pop .btn .btn-base{ cursor: pointer; margin-left:5px;width:100px;height:30px;background: url(../images/common/icon_dialog.png) -100px 0; display: inline-block;}
+.pop .btn .btn-base:hover{background-position:-100px -31px;}
+.pop .btn span{color:#FFF;position: relative;top: 6px;}
+.pop-info{ padding:20px 40px;}
+.pop-info h3{ font-size:18px; line-height:26px;}
+.pop-info p{ font-size:14px; color:#555; line-height:26px;}
+.pop-loading{ width:100%; height:200px;  border:1px solid #ED5F59; margin:0px auto; background:#FFF url(../images/common/loading.gif) no-repeat 50% 50px; border-radius:5px; behavior:url(static/zhongchou/css/phoenix/PIE.htc); }
+.pop-loading p{ width:100%; font-size:18px; font-weight:bold; margin:125px 0px 0px; text-align:center;}
+.error-text{ color:#ED615B;  line-height:28px; padding-left:10px;}
+
