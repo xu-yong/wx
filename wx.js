@@ -75,7 +75,7 @@
   };
 
   /**
-   * 获得随机送，如果只传一个参数，则该参为最大数
+   * 获得随机数，如果只传一个参数，则该参为最大数
    * @name    random
    * @param   {Integer}  最小数
    * @param   {Integer}  最大数
@@ -273,58 +273,6 @@
   };
 
   /**
-   * 使元素可拖拽移动
-   * @name    getMoveAction
-   * @param   {String}  拖拽区域的Title
-   * @param   {String}  拖拽主体
-  */
-  wx.getMoveAction = function(moveBar, moveBody) {
-    var isMove      = false,
-        lastX       = -1,
-        lastY       = -1,
-        offsetX     = -1,
-        offsetY     = -1,
-        $winBody    = $("body"),
-        $moveBar    = $(moveBar),
-        $moveBody   = $(moveBody),
-        isAbsoluate = $moveBody.css("position") === "absolute" ? true : false;
-
-    if($moveBar.length === 0 || $moveBody.length === 0) return;
-    $moveBar.css("cursor","move").unbind("mousedown").
-      bind("mousedown",function(event){
-        event.preventDefault();
-        var body  = $moveBody,
-            tempX = body.offset().left,
-            tempY = body.offset().top - (isAbsoluate ? 0 : $(document).scrollTop());
-        isMove  = true;
-        lastX   = event.clientX;
-        lastY   = event.clientY;
-        offsetX = event.clientX - tempX;
-        offsetY = event.clientY - tempY;
-        $winBody.unbind("mousemove").bind("mousemove",function(event){
-            if(!isMove) return false;
-            event.preventDefault();
-            event.stopPropagation();
-            lastX = event.clientX - lastX;
-            lastY = event.clientY - lastY;
-            body.css({"left" : event.clientX-lastX-offsetX,"top" : event.clientY-lastY-offsetY});
-            lastX = event.clientX;
-            lastY = event.clientY;
-        });
-    }).unbind("mouseup").bind("mouseup",function(event){
-        isMove = false;
-        $winBody.unbind("mousemove");
-    });
-    $winBody.unbind("mouseup").bind("mouseup",function(){
-        isMove = false;
-    });
-    $moveBar.blur(function(){
-        isMove = false;
-        $winBody.unbind("mousemove");
-    });
-  };
-
-  /**
    * 数据发送
    * 使用节流方法避免双击等重复提交
    * @name    sendData
@@ -356,7 +304,7 @@
        },options.loadDelay || 10);
     }
     if(options.sendTimeout){
-      timeoutId = window.setTimeout(function(){ajaxObj.abort();if(callback) callback.call(_this,{status:"timeout"});wx.alert("请求超时，请稍后再试！");},options.timeout||20000);
+      timeoutId = window.setTimeout(function(){ajaxObj.abort();if(callback) callback.call(_this,{status:"timeout"});wx.alert("请求超时，请稍后再试！");},options.sendTimeout||20000);
     }
     ajaxObj = $.ajax({
       type: options.type || "post",
@@ -384,17 +332,6 @@
           callback.call(_this,{status:"error",message:textStatus});
       }
     });
-  };
-
-  /**
-   * 获得蒙版层
-   * @name    getShadeLayer
-   * @param   {String}  指定蒙版的Class样式
-   * @return  {String}  蒙版字符串
-  */
-  wx.getShadeLayer = function(layerClass) {
-    var window_height = $('body').outerHeight() > _winHeight?$('body').outerHeight() : _winHeight;
-    return '<div id="Js-shadeLayer" class="'+layerClass+' pop-bg ie6fixpic" style="width:'+_winWidth+'px;height:'+window_height+'px;"></div>';
   };
 
   /**
@@ -529,7 +466,7 @@
     }
     $(".Js-pop").stop().remove();
     var htmlText = content;
-    var temp = wx.getShadeLayer("Js-pop")+
+    var temp = _getShadeLayer("Js-pop")+
                 "<div id='Js-pop-body' class='Js-pop' style='position: absolute; z-index:21'>"+
                   htmlText+
                 "</div>";
@@ -540,7 +477,7 @@
 
     $("#Js-pop-body").children().show();
     _setEleToCenter("#Js-pop-body",opts);
-    wx.getMoveAction(".title","#Js-pop-body");
+    _moveAction(".title","#Js-pop-body");
 
     function _close(){
       if(opts.attachBg) $("body").css("overflow","auto");
@@ -645,6 +582,60 @@
     }
     $ele.css({"top" : opts.y || (y<0 ? 10 : y),
               "left": opts.x || (_winWidth/2-width/2+(opts.offsetX||0)) });
+  }
+
+    
+  //使元素可拖拽移动
+  function _moveAction(moveBar, moveBody) {
+    var isMove      = false,
+        lastX       = -1,
+        lastY       = -1,
+        offsetX     = -1,
+        offsetY     = -1,
+        $winBody    = $("body"),
+        $moveBar    = $(moveBar),
+        $moveBody   = $(moveBody),
+        isAbsoluate = $moveBody.css("position") === "absolute" ? true : false;
+
+    if($moveBar.length === 0 || $moveBody.length === 0) return;
+    $moveBar.css("cursor","move").unbind("mousedown").
+      bind("mousedown",function(event){
+        event.preventDefault();
+        var body  = $moveBody,
+            tempX = body.offset().left,
+            tempY = body.offset().top - (isAbsoluate ? 0 : $(document).scrollTop());
+        isMove  = true;
+        lastX   = event.clientX;
+        lastY   = event.clientY;
+        offsetX = event.clientX - tempX;
+        offsetY = event.clientY - tempY;
+        $winBody.unbind("mousemove").bind("mousemove",function(event){
+            if(!isMove) return false;
+            event.preventDefault();
+            event.stopPropagation();
+            lastX = event.clientX - lastX;
+            lastY = event.clientY - lastY;
+            body.css({"left" : event.clientX-lastX-offsetX,"top" : event.clientY-lastY-offsetY});
+            lastX = event.clientX;
+            lastY = event.clientY;
+        });
+    }).unbind("mouseup").bind("mouseup",function(event){
+        isMove = false;
+        $winBody.unbind("mousemove");
+    });
+    $winBody.unbind("mouseup").bind("mouseup",function(){
+        isMove = false;
+    });
+    $moveBar.blur(function(){
+        isMove = false;
+        $winBody.unbind("mousemove");
+    });
+  }
+
+   //获得蒙版层
+  function _getShadeLayer(layerClass) {
+    var window_height = $('body').outerHeight() > _winHeight?$('body').outerHeight() : _winHeight;
+    return '<div id="Js-shadeLayer" class="'+layerClass+' pop-bg ie6fixpic" style="width:'+_winWidth+'px;height:'+window_height+'px;"></div>';
   }
 
   /**
@@ -1249,9 +1240,9 @@
     var arrayProto = Array.prototype,stringProto = String.prototype;
     if(stringProto.getBytes === undefined){
       stringProto.getBytes = function() {
-    　　var cArr = this.match(/[^x00-xff]/ig);
-    　　return this.length + (cArr === null ? 0 : cArr.length);
-  　　};
+        var cArr = this.match(/[^x00-xff]/ig);
+        return this.length + (cArr === null ? 0 : cArr.length);
+      };
     }
     if(arrayProto.remove === undefined){
       arrayProto.remove = function(index){
