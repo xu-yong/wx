@@ -7,6 +7,8 @@
 *
 * @author xuyong <xuyong@ucfgroup.com>
 * @createTime 2014-03-18
+* @projectHome https://github.com/xu-yong/wx
+*
 * Released under the MIT license:
 *   http://www.opensource.org/licenses/mit-license.php
 */

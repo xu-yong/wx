@@ -8,6 +8,8 @@
 * @author xuyong <xuyong@ucfgroup.com>
 * @createTime 2014-03-18
 * @version 1.0.0
+* @projectHome https://github.com/xu-yong/wx
+*
 * Released under the MIT license:
 *   http://www.opensource.org/licenses/mit-license.php
 */
@@ -92,7 +94,7 @@
                     if($elem.length){
                         setVal = eval('data["'+setItem[1].replace(/\./g,'"]["')+'"]');
                         setVal += setVal.indexOf("?") !== -1 ? "&_"+new Date().getTime() : "?_="+new Date().getTime();
-                        if($elem[0].nodeName === "IMG")
+                        if($elem.is("img"))
                             $elem.attr("src",setVal);
                         else
                             $elem.css("background","url("+setVal+")");
