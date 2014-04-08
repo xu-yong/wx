@@ -42,6 +42,7 @@
     _globalData.pageLoad = true;
     _pageSetup();
     wx.validator();
+    wx.lazyLoad();
   });
 
   /**
@@ -1164,6 +1165,41 @@
     }
   };
 
+  wx.lazyLoad = function(context) {
+    var $els = $(context || "body").find("*[wx-lz-url]");
+
+    if(!$els.length) return;
+
+    $els.one("appear",function(){
+      var $self = $(this);
+      $self.loaded = true;
+      $self.hide();
+      $("<img />").on("load", function(){
+        if($self.is("img"))
+          $self.attr("src",$self.attr("wx-lz-url"));
+        $self.fadeIn();
+      }).attr("src",$self.attr("wx-lz-url"));
+    });
+
+    function update(){
+      $els.each(function(){
+        var $self = $(this);
+        if($self.loaded) return;
+        checkPos($self);
+      });
+    }
+
+    function checkPos($img){
+      var scroll = $(document).scrollTop()+_winHeight;
+      if($img.position().top < scroll){
+        $img.trigger('appear');
+      }
+    }
+
+    $(document).on("scroll",wx.throttle(update,100));
+    update();
+  };
+
   wx.clear = function(){
     var ls = window.localStorage;
     if(ls){
@@ -1180,7 +1216,10 @@
         console.log("%c"+text,"color:red;font-size:20px;font-weight:bold");
       };
     }
-    if(wxStaticPath){
+
+    if(window.wxLoadedConfig){
+      _configOnLoad();
+    } else if(window.wxStaticPath){
       var ls = window.localStorage;
       if(ls){
         var lastVersion = ls.getItem("wxVersion");
@@ -1201,9 +1240,9 @@
       } else {
         $.getScript(wxStaticPath+"js/wx.config.js",_configOnLoad);
       }
-    }
-    else
+    } else {
       wx.log("请设置静态文件路径");
+    }
   }
 
   function _configOnLoad(){
@@ -1277,16 +1316,20 @@
 
   //插件检测
   function _pluginCheck(context){
-    var $body = $(context || "body"),
-        load  = null;
+    var $body = $(context || "body");
 
-    var $wxUpload = $body.find("input[wx-upload]");
-    if($wxUpload.length){
+    var $wxUpload   = $body.find("input[wx-upload]");
+    _uploadPlugin($wxUpload);
+  }
+
+  function _uploadPlugin($upload) {
+    var load = null;
+    if($upload.length){
       if(wx.upload){
         uploadOnLoad();
       }
       else{
-       $wxUpload.click(function(){load = wx.loading("正在加载，请等待...");});
+       $upload.click(function(){load = wx.loading("正在加载，请等待...");});
         $.getScript(wxStaticPath+"js/wx.upload.js",uploadOnLoad);
       }
     }
@@ -1295,10 +1338,11 @@
         load.close();
         load = null;
       }
-      $wxUpload.unbind("click").each(function(){
+      $upload.unbind("click").each(function(){
         wx.upload($(this));
       });
     }
   }
+
   
 })(window, document, jQuery);
