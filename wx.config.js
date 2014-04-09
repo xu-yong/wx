@@ -20,6 +20,9 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
     //是否缓存此文件
     cache : true,
 
+    //flash文件地址，如未指定将使用baseUrl
+    flashUrl : '',
+
     /**
     路由地址类型
       0 不解析

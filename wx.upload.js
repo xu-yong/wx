@@ -172,7 +172,8 @@
             flashOpt.progress = flashOpt.progress.name;
         if(flashOpt.before)
             flashOpt.before = flashOpt.before.name;
-        flashOpt.callback = flashOpt.callback.name;
+        if(flashOpt.callback)
+            flashOpt.callback = flashOpt.callback.name;
         flashOpt.param = encodeURIComponent(flashOpt.param);
 
         var falshObj = wx.loadFlash("wx",{id:"wx-falsh","width":width,"height":height},{flashvars:wx.jsonToString(flashOpt)});

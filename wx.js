@@ -32,15 +32,15 @@
   wx.BACK    = 0;
   wx.RELOAD  = 1;
   //全局配置信息
-  wx.config  = {};
+  wx.config  = {
+    loadedConfig : false
+  };
 
-  _pageInit();
   _protoExtend();
   _browserCheck();
 
   $(function(){
-    _globalData.pageLoad = true;
-    _pageSetup();
+    _pageInit();
     wx.validator();
     wx.lazyLoad();
   });
@@ -744,7 +744,7 @@
       window.wxFlashLoaded = function(){
         callback(window[attrs.id]);
       };
-      return _createSwfObject(wxStaticPath+"flash/"+flashName+'.swf?t='+new Date().getTime(),attrs, options);
+      return _createSwfObject((wx.config.flashUrl || wx.config.baseUrl)+"flash/"+flashName+'.swf?t='+new Date().getTime(),attrs, options);
     }
   };
 
@@ -1217,20 +1217,27 @@
       };
     }
 
-    if(window.wxLoadedConfig){
-      _configOnLoad();
-    } else if(window.wxStaticPath){
+    var mainJsUrl = $("script[wx-main]").attr("src");
+    if(mainJsUrl && !wx.config.baseUrl){
+      var src = mainJsUrl.split('/').slice(0,-2);
+      var subPath = src.length ? src.join('/')  + '/' : './';
+      wx.config.baseUrl = subPath;
+    }
+
+    if(wx.config.loadedConfig){
+      _pageSetup();
+    } else if(wx.config.baseUrl){
       var ls = window.localStorage;
       if(ls){
         var lastVersion = ls.getItem("wxVersion");
         if(lastVersion && lastVersion === wx.VERSION){
           window.setTimeout(function(){
            wx.config = wx.stringToJson(ls.getItem("wxconfig"),true);
-           _configOnLoad();
+           _pageSetup();
           },0);
         } else {
-          $.getScript(wxStaticPath+"js/wx.config.js",function(){
-              _configOnLoad();
+          $.getScript(wx.config.baseUrl+"js/wx.config.js",function(){
+              _pageSetup();
               if(wx.config.cache){
                 ls.setItem("wxVersion",wx.VERSION);
                 ls.setItem("wxconfig",wx.jsonToString(wx.config,true));
@@ -1238,24 +1245,15 @@
           });
         }
       } else {
-        $.getScript(wxStaticPath+"js/wx.config.js",_configOnLoad);
+        $.getScript(wx.config.baseUrl+"js/wx.config.js",_pageSetup);
       }
     } else {
       wx.log("请设置静态文件路径");
     }
   }
 
-  function _configOnLoad(){
-    _globalData.configLoad = true;
-    _pageSetup();
-  }
-
   //页面构建
   function _pageSetup() {
-    if(!_globalData.configLoad || !_globalData.pageLoad){
-      return;
-    }
-    //要保证config文件和页面onload都执行完再去检测插件
     _pluginCheck();
 
     try{
@@ -1318,7 +1316,7 @@
   function _pluginCheck(context){
     var $body = $(context || "body");
 
-    var $wxUpload   = $body.find("input[wx-upload]");
+    var $wxUpload = $body.find("input[wx-upload]");
     _uploadPlugin($wxUpload);
   }
 
@@ -1330,7 +1328,7 @@
       }
       else{
        $upload.click(function(){load = wx.loading("正在加载，请等待...");});
-        $.getScript(wxStaticPath+"js/wx.upload.js",uploadOnLoad);
+        $.getScript(wx.config.baseUrl+"js/wx.upload.js",uploadOnLoad);
       }
     }
     function uploadOnLoad(){
@@ -1343,6 +1341,5 @@
       });
     }
   }
-
   
 })(window, document, jQuery);

@@ -18,6 +18,7 @@
 		public function wx()
 		{
 			Security.allowDomain("*");
+			Security.allowInsecureDomain("*");
 			fileRef = new FileReference();
 			ExternalInterface.addCallback("loadData",OnLoad);
 			ExternalInterface.addCallback("saveData",OnSave);
@@ -34,10 +35,6 @@
 
 			uploadBtn.addEventListener(MouseEvent.CLICK, browseHandler);
 			fileRef.addEventListener(Event.SELECT,selectHandler);
-			//选择文件;
-			fileRef.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,uploadCompleteDataHandler);
-			fileRef.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			fileRef.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 
 			ExternalInterface.call("wxFlashLoaded");
 		}
@@ -178,9 +175,15 @@
 					req.data = variables;
 				}
 				req.method = URLRequestMethod.POST;
+				fileRef.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,uploadCompleteDataHandler);
+				fileRef.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+				fileRef.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+				fileRef.addEventListener(HTTPStatusEvent.HTTP_STATUS, ioErrorHandler);  
+				fileRef.addEventListener(SecurityErrorEvent.SECURITY_ERROR, ioErrorHandler);
 				fileRef.upload(req, getFlashVars("name"), false);
 			}
 		}
+
 
 		function uploadCompleteDataHandler(event:DataEvent):void
 		{
