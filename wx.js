@@ -32,9 +32,7 @@
   wx.BACK    = 0;
   wx.RELOAD  = 1;
   //全局配置信息
-  wx.config  = {
-    loadedConfig : false
-  };
+  wx.config  = {};
 
   _protoExtend();
   _browserCheck();
@@ -1165,6 +1163,11 @@
     }
   };
 
+  /**
+   * 懒加载
+   * @name    lazyLoad
+   * @param   {String}    运行上下文
+  */
   wx.lazyLoad = function(context) {
     var $els = $(context || "body").find("*[wx-lz-url]");
 
@@ -1200,13 +1203,6 @@
     update();
   };
 
-  wx.clear = function(){
-    var ls = window.localStorage;
-    if(ls){
-      ls.clear();
-    }
-  };
-
   //页面初始化
   function _pageInit() {
     if(window.console === undefined){
@@ -1217,14 +1213,13 @@
       };
     }
 
-    var mainJsUrl = $("script[wx-main]").attr("src");
-    if(mainJsUrl && !wx.config.baseUrl){
-      var src = mainJsUrl.split('/').slice(0,-2);
-      var subPath = src.length ? src.join('/')  + '/' : './';
-      wx.config.baseUrl = subPath;
+    if(!wx.config.baseUrl){
+      var url = $("script:first").attr("src").split('/');
+      var src = url.slice(0,url.indexOf("js"));
+      wx.config.baseUrl = src.length ? src.join('/')  + '/' : './';
     }
 
-    if(wx.config.loadedConfig){
+    if(wx.config.loading){
       _pageSetup();
     } else if(wx.config.baseUrl){
       var ls = window.localStorage;
@@ -1258,7 +1253,7 @@
 
     try{
       var path = location.pathname.substring(1).split("/");
-      if(wx.config.route === '1'){ //经过转化后的config文件值都是字符类型
+      if(wx.config.route == 1){
         if(path[1]){
           for (var i = 0,list = path[1].split("-"),len = list.length; i < len; i+=2) {
             wx.REQUEST[list[i]] = list[i+1];
