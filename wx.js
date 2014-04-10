@@ -1169,19 +1169,24 @@
    * @param   {String}    运行上下文
   */
   wx.lazyLoad = function(context) {
-    var $els = $(context || "body").find("*[wx-lz-url]");
+    var $els = $(context || "body").find("[wx-lz]:visible"),
+        showType = wx.config.lazyLoadShowType,
+        threshold  = wx.config.lazyLoadThreshold;
 
     if(!$els.length) return;
 
     $els.one("appear",function(){
-      var $self = $(this);
+      var $self = $(this),
+          url   = $self.attr("wx-lz");
       $self.loaded = true;
       $self.hide();
       $("<img />").on("load", function(){
         if($self.is("img"))
-          $self.attr("src",$self.attr("wx-lz-url"));
-        $self.fadeIn();
-      }).attr("src",$self.attr("wx-lz-url"));
+          $self.attr("src",url);
+        else
+          $self.css("background-image","url("+url+")");
+        $self[showType]();
+      }).attr("src",url);
     });
 
     function update(){
@@ -1192,14 +1197,14 @@
       });
     }
 
-    function checkPos($img){
+    function checkPos($el){
       var scroll = $(document).scrollTop()+_winHeight;
-      if($img.position().top < scroll){
-        $img.trigger('appear');
+      if($el.position().top < scroll+threshold){
+        $el.trigger('appear');
       }
     }
 
-    $(document).on("scroll",wx.throttle(update,100));
+    $(window).on("scroll",wx.throttle(update,100));
     update();
   };
 

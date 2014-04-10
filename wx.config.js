@@ -39,6 +39,12 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
     //默认上传文件大小，以MB为单位
     uploadSize : '2',
 
+    //懒加载的显示类型，可以是show或者是fadeIn
+    lazyLoadShowType : 'show',
+
+    //懒加载临界点
+    lazyLoadThreshold : 100,
+
     //弹出框loading结构
     loading : '<div class="pop-box pop-loading" style="width:300px;">\
       <div class="pop-body">\
