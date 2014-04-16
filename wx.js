@@ -1219,7 +1219,7 @@
     }
 
     if(!wx.config.baseUrl){
-      var url = $("script:first").attr("src").split('/');
+      var url = ($("script[wx-main]").length ? $("script[wx-main]") : $("script:first")).attr("src").split('/');
       var src = url.slice(0,url.indexOf("js"));
       wx.config.baseUrl = src.length ? src.join('/')  + '/' : './';
     }
