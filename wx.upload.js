@@ -7,7 +7,7 @@
 *
 * @author xuyong <xuyong@ucfgroup.com>
 * @createTime 2014-03-18
-* @version 1.0.0
+* @version 1.1.0
 * @projectHome https://github.com/xu-yong/wx
 *
 * Released under the MIT license:
@@ -110,50 +110,58 @@
     }
 
     function h5() {
-        var fd      = new FormData(),
-            xhr     = new XMLHttpRequest(),
-            len     = this.files.length,
+        var fd      = null,
+            xhr     = null,
+            files   = this.files,
             $input  = $(this),
             options = $input.data("opt");
 
         if(!before(options,$input)) return;
 
-        for(var i=0; i<len; i++){
-            if(options.size && this.files[i].size > options.size){
-                wx.alert("上传的文件太大，请重新上传");
-                return;
-            } else if(options.type && (!this.files[i].type || options.type.indexOf(this.files[i].type.split("/")[1]) === -1)){
+        for(var i=0; i<files.length; i++){
+            if(options.size && files[i].size > options.size){
+                wx.alert("上传的文件太大，请压缩后重新上传");
+                continue;
+            } else if(options.type && (!files[i].type || options.type.indexOf(files[i].type.split("/")[1]) === -1)){
                 wx.alert("文件格式不符");
-                return;
+                continue;
             }
-            fd.append(len > 1 ? (options.name+"[]") : options.name, this.files[i]);
+
+            fd  = new FormData();
+            xhr = new XMLHttpRequest();
+            xhr.open("POST", options.url);
+            bindEvent(xhr);
+            addParam(fd);
+            fd.append(options.name, files[i]);
+            xhr.send(fd);
+            fd = xhr = null;
         }
 
-        if(options.param){
-            var tempURL = options.param.split('&');
-            for(var i = 0;i<tempURL.length;i++){
-               var t = tempURL[i].split('=');
-               fd.append(t[0], t[1]);
+        function addParam(fd){
+            if(options.param){
+                var tempURL = options.param.split('&');
+                for(var i = 0;i<tempURL.length;i++){
+                   var t = tempURL[i].split('=');
+                   fd.append(t[0], t[1]);
+                }
             }
         }
 
-        if(options.progress)
-            xhr.addEventListener("progress", function(evt){h5Progress(evt,options,$input);}, false);
-        xhr.addEventListener("load", function(evt){complete(evt.target.responseText,options,$input);}, false);
-        xhr.addEventListener("error", function(error){complete('{"status:0",error:"'+error+'"}',options,$input);}, false);
-        xhr.open("POST", options.url);
-        xhr.send(fd);
-        fd = xhr = null;
+        function bindEvent(xhr){
+            if(options.progress){
+                xhr.addEventListener("progress", function(evt){
+                    if (evt.lengthComputable) {
+                      options.progress(Math.round(evt.loaded * 100 / evt.total).toString(),$input);
+                    } else {
+                      wx.log('unable to compute');
+                    }
+                }, false);
+            }
+            xhr.addEventListener("load", function(evt){complete(evt.target.responseText,options,$input);}, false);
+            xhr.addEventListener("error", function(error){complete('{"status:0",error:"'+error+'"}',options,$input);}, false);
+        }
     }
 
-    function h5Progress(evt, options, $input) {
-        if (evt.lengthComputable) {
-          options.progress(Math.round(evt.loaded * 100 / evt.total).toString(),$input);
-        }
-        else {
-          wx.log('unable to compute');
-        }
-    }
 
     function flash($input) {
         var width    = $input.width(),
