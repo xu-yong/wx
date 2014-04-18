@@ -46,53 +46,62 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
     lazyLoadThreshold : 100,
 
     //弹出框loading结构
-    loading : '<div class="pop-box pop-loading" style="width:300px;">\
-      <div class="pop-body">\
-        <p wx-pop-content>&nbsp;&nbsp;&nbsp;请等待...</p>\
-        </div>\
-      </div>',
+    loading: '<table class="ui-dialog">\
+      <tbody>\
+          <td class="ui-dialog-body">\
+            <div class="ui-dialog-content" wx-pop-content>&nbsp;&nbsp;&nbsp;请等待...</div>\
+          </td>\
+        </tr>\
+      </tbody>\
+    </table>',
 
     //弹出框alert结构
-    alert: '<div class="pop alert">\
-      <div class="pop-box">\
-        <div class="title">\
-            <h3 wx-pop-title>提示</h3>\
-            <a href="javascript:;" class="btn-close common-sprite ie6fixpic Js-pop-close" wx-pop-close>×</a>\
-        </div>\
-        <div class="pop-body">\
-            <div class="pop-info">\
-                <h3 wx-pop-content></h3>\
+    alert: '<table class="ui-dialog">\
+      <tbody>\
+        <tr class="title">\
+          <td class="ui-dialog-header">\
+            <button class="ui-dialog-close Js-pop-close" wx-pop-close title="取消">×</button>\
+            <div x-pop-title class="ui-dialog-title">消息</div>\
+          </td>\
+        </tr>\
+        <tr>\
+          <td class="ui-dialog-body">\
+            <div class="ui-dialog-content" wx-pop-content></div>\
+          </td>\
+        </tr>\
+        <tr>\
+          <td class="ui-dialog-footer">\
+            <div class="ui-dialog-button">\
+              <button class="ui-dialog-autofocus Js-pop-close" wx-pop-ok type="button">确 定</button>\
             </div>\
-            <div wx-pop-close class="btn">\
-                <a class="btn-base btn-red-h30 common-sprite Js-pop-close">\
-                    <span wx-pop-ok class="common-sprite">确定</span>\
-                </a>\
-            </div>\
-        </div>\
-      </div>\
-    </div>',
+          </td>\
+        </tr>\
+      </tbody>\
+    </table>',
 
     //弹出框confirm结构
-    confirm : '<div class="pop confirm">\
-      <div class="pop-box">\
-      <div class="title">\
-        <h3 wx-pop-title>提示</h3>\
-        <a href="javascript:;" class="btn-close common-sprite ie6fixpic Js-pop-close">×</a>\
-      </div> \
-      <div class="pop-body">\
-        <div class="pop-info">\
-          <h3 wx-pop-content></h3>\
-        </div>\
-        <div class="btn">\
-          <a id="Js-confirm-ok" class="btn-base btn-red-h30 common-sprite">\
-            <span class="common-sprite" wx-pop-ok>确认</span>\
-          </a>\
-          <a class="btn-base btn-gray-h30 common-sprite Js-pop-close">\
-            <span class="common-sprite">取消</span>\
-          </a>\
-        </div>\
-      </div>\
-      </div>\
-    </div>'
+    confirm: '<table class="ui-dialog">\
+      <tbody>\
+        <tr class="title">\
+          <td class="ui-dialog-header">\
+            <button class="ui-dialog-close Js-pop-close" wx-pop-close title="取消">×</button>\
+            <div x-pop-title class="ui-dialog-title">消息</div>\
+          </td>\
+        </tr>\
+        <tr>\
+          <td class="ui-dialog-body">\
+            <div class="ui-dialog-content" wx-pop-content></div>\
+          </td>\
+        </tr>\
+        <tr>\
+          <td class="ui-dialog-footer">\
+            <div class="ui-dialog-button">\
+              <button class="Js-pop-close" type="button">取消</button>\
+              <button id="Js-confirm-ok" class="ui-dialog-autofocus Js-pop-close" wx-pop-ok type="button">确 定</button>\
+            </div>\
+          </td>\
+        </tr>\
+      </tbody>\
+    </table>'
   });
 }

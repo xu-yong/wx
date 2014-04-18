@@ -1,25 +1,134 @@
-@charset "utf-8";
+/**
+* wx.css
+*
+* 用于弹框的css样式
+*
+* @author xuyong <xuyong@ucfgroup.com>
+* @createTime 2014-03-18
+* @projectHome https://github.com/xu-yong/wx
+*
+* Released under the MIT license:
+*   http://www.opensource.org/licenses/mit-license.php
+*/
 
-.pop-bg{background: #000; width:100%; height:100%; opacity: 0.2; filter: alpha(opacity:20)\9;position: absolute;top: 0;left: 0; z-index: 20;}
-.pop{ box-shadow:5px 5px 20px rgba(0,0,0,0.4);}
-.form{width:490px;}
-.confirm{width:435px;}
-.alert{width:440px;}
-.pop-box{ border-radius:5px;  background:#FFF; border:1px solid #d6d6d6; position:relative; }
-.pop .title{ width:100%;  background:#F7FAFD; height:40px; border-radius:5px 5px 0px 0px; position:relative;}
-.pop .title h3{ font-size:14px; line-height:40px; padding-left:10px; float:left;font-weight: bold;}
-.btn-close{ position:absolute; right:12px; top:8px; width:24px; height:24px;background: url(../images/common/icon_dialog.png) no-repeat scroll 0 0 rgba(0, 0, 0, 0); line-height:0px; font-size:0px;}
-.btn-close:hover{background-position: 0px -25px;}
-.pop-body{ background:#FFF; padding:0px 15px; border-radius:0px 0px 5px 5px; }
-.pop .info{ padding:20px 0px;}
-.pop .btn{padding:20px 0px; margin: 0 auto;text-align:center;}
-.pop .btn .btn-base{ cursor: pointer; margin-left:5px;width:100px;height:30px;background: url(../images/common/icon_dialog.png) -100px 0; display: inline-block;}
-.pop .btn .btn-base:hover{background-position:-100px -31px;}
-.pop .btn span{color:#FFF;position: relative;top: 6px;}
-.pop-info{ padding:20px 40px;}
-.pop-info h3{ font-size:18px; line-height:26px;}
-.pop-info p{ font-size:14px; color:#555; line-height:26px;}
-.pop-loading{ width:100%; height:200px;  border:1px solid #ED5F59; margin:0px auto; background:#FFF url(../images/common/loading.gif) no-repeat 50% 50px; border-radius:5px; behavior:url(static/zhongchou/css/phoenix/PIE.htc); }
-.pop-loading p{ width:100%; font-size:18px; font-weight:bold; margin:125px 0px 0px; text-align:center;}
-.error-text{ color:#ED615B;  line-height:28px; padding-left:10px;}
-
+.ui-dialog {
+    *zoom:1;
+    _float: left;
+    position: relative;
+    background-color: #FFF;
+    border: 1px solid #999;
+    border-radius: 6px;
+    outline: 0;
+    font-size: 14px;
+    color: #333;
+    width:300px;
+}
+.ui-dialog-title {
+    margin: 0;
+    line-height: 1.428571429;
+    min-height: 16.428571429px;
+    padding: 15px;
+    overflow:hidden; 
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: bold;
+}
+.ui-dialog-header {
+    white-space: nowrap;
+    border-bottom: 1px solid #E5E5E5;
+}
+.ui-dialog-body {
+    padding: 20px;
+    text-align: center;
+}
+.ui-dialog-content {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    *zoom: 1;
+    *display: inline;
+    text-align: left;
+    word-break: break-all;
+}
+.ui-dialog-close {
+    position: relative;
+    _position: absolute;
+    float: right;
+    top: 13px;
+    right: 13px;
+    _height: 26px;
+    padding: 0 4px;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #FFF;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    cursor: pointer;
+    background: transparent;
+    _background: #FFF;
+    border: 0;
+    -webkit-appearance: none;
+}
+.ui-dialog-close:hover,
+.ui-dialog-close:focus {
+    color: #000000;
+    text-decoration: none;
+    cursor: pointer;
+    outline: 0;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.ui-dialog-button {
+    float: right;
+    white-space: nowrap;
+}
+.ui-dialog-footer button+button {
+    margin-bottom: 0;
+    margin-left: 5px;
+}
+.ui-dialog-footer button {
+    width:auto;
+    overflow:visible;
+    display: inline-block;
+    padding: 6px 12px;
+    _margin-left: 5px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.ui-dialog-footer button {
+    background-color: #FFFFFF;
+    border-color: #CCCCCC;
+    color: #333333;
+}
+.ui-dialog-footer {
+    padding: 0 15px 15px;
+}
+.ui-dialog-footer button.ui-dialog-autofocus {
+  color: #ffffff;
+  background-color: #428bca;
+  border-color: #357ebd;
+}
+.ui-dialog-footer button.ui-dialog-autofocus:hover,
+.ui-dialog-footer button.ui-dialog-autofocus:focus,
+.ui-dialog-footer button.ui-dialog-autofocus:active {
+  color: #ffffff;
+  background-color: #3276b1;
+  border-color: #285e8e;
+}
+.ui-dialog-footer button:hover,
+.ui-dialog-footer button:focus,
+.ui-dialog-footer button:active {
+  color: #333333;
+  background-color: #ebebeb;
+  border-color: #adadad;
+}
