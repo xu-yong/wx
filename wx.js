@@ -1149,6 +1149,9 @@
     post: function(value) {
       return value.length === 0 || /^[0-9]{6}$/.test(value);
     },
+    cardId: function(value) {
+      return value.length === 0 || /^(\d{18,18}|\d{15,15}|\d{17,17}x)$/.test(value);
+    },
     passport: function(value) {
       return value.length === 0 || /^1[45][0-9]{7}$|^G[0-9]{8}$|^P[0-9]{7}$|^S[0-9]{7,8}$|^D[0-9]+$/.test(value);
     },
