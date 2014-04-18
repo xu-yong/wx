@@ -1074,6 +1074,7 @@
     "equalTo"         : "请保持所填写的内容一致",
     "digits"          : "请填写数字",
     "post"            : "请填写正确的邮编号码",
+    "cardId"          : "请填写正确的身份证号码",
     "noSymbol"        : "不能有符号",
     "url"             : "请使用正确格式，如http://www.website.com"
   };
