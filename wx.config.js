@@ -33,7 +33,7 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
     //默认上传地址
     uploadUrl : '',
 
-    //默认上传类型
+    //默认上传类型，全部支持为 *
     uploadType : 'jpeg|jpg|png|gif',
 
     //默认上传文件大小，以MB为单位

@@ -7,7 +7,7 @@
 *
 * @author xuyong <xuyong@ucfgroup.com>
 * @createTime 2014-03-18
-* @version 1.1.0
+* @version 1.1.1
 * @projectHome https://github.com/xu-yong/wx
 *
 * Released under the MIT license:
@@ -57,6 +57,7 @@
         options.progress = $.isFunction(window[options.name+"_progress"]) ? window[options.name+"_progress"] : null;
         options.mult ? $elem.attr("multiple",true) : null;
         $elem.data("opt",options);
+        $elem.attr('hidefocus','true');
         return options;
     }
 
@@ -82,7 +83,7 @@
                     if($inputAss.length)
                         $inputAss.val(assVal);
                     else
-                        $input.after('<input name="'+assignItem[0]+'" value="'+assVal+'" style="display:none;">');
+                        $input.before('<input name="'+assignItem[0]+'" value="'+assVal+'" style="display:none;">');
                 }
             }
             if(options.set && data[wx.config.dataFlag] == wx.config.dataSuccessVal){
@@ -122,7 +123,7 @@
             if(options.size && files[i].size > options.size){
                 wx.alert("上传的文件太大，请压缩后重新上传");
                 continue;
-            } else if(options.type && (!files[i].type || options.type.indexOf(files[i].type.split("/")[1]) === -1)){
+            } else if(options.type && options.type !== "*" && (!files[i].type || options.type.indexOf(files[i].type.split("/")[1]) === -1)){
                 wx.alert("文件格式不符");
                 continue;
             }
@@ -135,6 +136,7 @@
             fd.append(options.name, files[i]);
             xhr.send(fd);
             fd = xhr = null;
+            $input.unbind("change").val('').change(h5);
         }
 
         function addParam(fd){
