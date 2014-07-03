@@ -28,7 +28,7 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
       0 不解析
       1 解析格式为：/module-action/param-1
     */
-    route : 1,
+    route : 0,
 
     //默认上传地址
     uploadUrl : '',
@@ -44,6 +44,21 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
 
     //懒加载临界点
     lazyLoadThreshold : 100,
+
+    //ajax请求返回数据成功与否的标示字段
+    dataFlag : 'status',
+
+    //ajax请求返回数据中的描述信息，用于向用户展示
+    dataInfo : 'info',
+
+    //ajax请求返回数据成功与否的判断数值
+    dataSuccessVal : '1',
+
+    //ajax请求返回数据中用于定义业务异常展示的数值
+    dataDefaultAlertVal : '5',
+
+    //ajax请求返回数据中用于获得跳转地址的字段
+    dataJumpFlag : 'jump',
 
     //弹出框loading结构
     loading: '<table class="ui-dialog">\

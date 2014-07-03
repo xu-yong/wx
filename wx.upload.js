@@ -72,7 +72,7 @@
     function complete(responseText, options, $input) {
         try{
             var data = $.parseJSON(responseText);
-            if(options.assign && data.status === 1){
+            if(options.assign && data[wx.config.dataFlag] == wx.config.dataSuccessVal){
                 var assign = options.assign.split("&");
                 for(var i = 0; i<assign.length; i++){
                     var assVal     = "",
@@ -85,7 +85,7 @@
                         $input.after('<input name="'+assignItem[0]+'" value="'+assVal+'" style="display:none;">');
                 }
             }
-            if(options.set && data.status === 1){
+            if(options.set && data[wx.config.dataFlag] == wx.config.dataSuccessVal){
                 var set   = options.set.split("&");
                 for(var i = 0; i<set.length; i++){
                     var setVal  = "",

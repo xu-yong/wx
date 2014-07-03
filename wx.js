@@ -305,7 +305,7 @@
        },options.loadDelay || 10);
     }
     if(options.sendTimeout){
-      timeoutId = window.setTimeout(function(){ajaxObj.abort();if(callback) callback.call(_this,{status:"timeout"});wx.alert("请求超时，请稍后再试！");},options.sendTimeout||20000);
+      timeoutId = window.setTimeout(function(){ajaxObj.abort();if(callback) callback.call(_this,{"wxStatus":"timeout"});wx.alert("请求超时，请稍后再试！");},options.sendTimeout||20000);
     }
     ajaxObj = $.ajax({
       type: options.type || "post",
@@ -320,7 +320,7 @@
         window.clearTimeout(timerLoadId);
         if(options.sendTimeout)
           window.clearTimeout(timeoutId);
-        if(backData.status === 5 && (options.alertPrompt !== undefined ? options.alertPrompt : true)){
+        if(backData[wx.config.dataFlag] == wx.config.dataDefaultAlertVal && (options.alertPrompt !== undefined ? options.alertPrompt : true)){
           wx.alert(backData.message || backData.info,function(){if(callback) callback.call(options.context || _this, backData, options.extData);});
         } else {
           if(callback)
@@ -330,7 +330,7 @@
         window.clearTimeout(timerLoadId);
         window.clearTimeout(timeoutId);
         if(callback)
-          callback.call(_this,{status:"error",message:textStatus});
+          callback.call(_this,{"wxStatus":"error",message:textStatus});
       }
     });
   };
@@ -1016,10 +1016,10 @@
           event.preventDefault();
           if(handleAjax){
             wx.sendData(action,$thisForm.serialize()+isAjax,function(ajData){
-              if(ajData.status === 1)
-                wx.alert(ajData.info||ajData.message,handleAjax.toUpperCase() === "JUMP" ? ajData.jump : wx[handleAjax.toUpperCase()]);
+              if(ajData[wx.config.dataFlag] == wx.config.dataSuccessVal)
+                wx.alert(ajData.info||ajData.message||wx.config.dataInfo,handleAjax.toUpperCase() === "JUMP" ? ajData[wx.config.dataJumpFlag] : wx[handleAjax.toUpperCase()]);
               else
-                wx.alert(ajData.info||ajData.message);
+                wx.alert(ajData.info||ajData.message||wx.config.dataInfo);
             });
           } else{
             wx.sendData(action,$thisForm.serialize()+isAjax,$.isFunction(window[callback]) ? window[callback] : undefined);
