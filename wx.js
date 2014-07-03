@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.3.0";
+  wx.VERSION = "1.3.1";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -822,7 +822,7 @@
           $("#"+thisAttr["me"]).hide();
           thisAttr["su"].hide();
           if(wx.trim($this.val()) === wx.trim(thisAttr["va"])){
-            setFirstErrorMessage($thisForm,$this.attr(thisAttr["me"]));
+            setFirstErrorMessage($thisForm,$this.attr(thisAttr["me"]),$this,thisAttr["me"]);
             if(!thisAttr["nt"]){
               if($("#"+thisAttr["me"]).length){
                 $("#"+thisAttr["me"]).show();
@@ -850,7 +850,7 @@
           $("#"+thisAttr["nc"]).hide();
           thisAttr["su"].hide();
           if(!$thisCheckbox.is(":checked") && thisAttr["me"]){
-            setFirstErrorMessage($thisForm,thisAttr["me"]);
+            setFirstErrorMessage($thisForm,thisAttr["me"],$thisCheckbox,thisAttr["nc"]);
             if(!thisAttr["nt"]){
               if($("#"+thisAttr["nc"]).length){
                 $("#"+thisAttr["nc"]).show();
@@ -926,7 +926,7 @@
                 var errorFlag = thisAttr["na"]+n,
                     errorText = $thisInput.attr(errorFlag) || wx.validator.config[n].replace("@",inputParam[i]||"");
                 inputValid = false;
-                setFirstErrorMessage($thisForm,errorText);
+                setFirstErrorMessage($thisForm,errorText,$thisInput,errorFlag);
                 if(!thisAttr["nt"]){
                   if($inputErro.length){
                     $inputErro.show();
@@ -975,7 +975,7 @@
           callback   = $thisForm.attr("name"),
           formInfo   = getFormInnerElement($thisForm);
       $thisForm.data("valid",true);
-      setFirstErrorMessage($thisForm,0,1);
+      resetFirstErrorMessage($thisForm);
       formInfo.$input.each(function(){
         var $thisInput = $(this);
         $thisInput.trigger($thisInput.attr(prefix+"-event-type")||"blur");
@@ -997,7 +997,17 @@
           else
              wx.alert(message);
         } else if(typeof formInfo.$submitBn.attr(prefix+"-get-error") !== "undefined"){
-          wx.alert(getFirstErrorMessage($thisForm));
+          wx.alert(getFirstErrorMessage($thisForm).m);
+        }
+        if(!formInfo.noScroll){
+          var errorEleTop = getFirstErrorMessage($thisForm).e.offset().top - getFirstErrorMessage($thisForm).e.height();
+          if(errorEleTop < $(document).scrollTop()){
+            $('html,body').animate({"scrollTop":errorEleTop},1000,function(){
+              var $errEle = $("#"+getFirstErrorMessage($thisForm).i),count = 0;
+              var tId = setInterval(function(){if(count%2)$errEle.show();else $errEle.hide();count++},300);
+              setTimeout(function(){clearInterval(tId);$errEle.show();},2000);
+            });
+          }
         }
       } else {
         var confirmText = formInfo.$submitBn.attr(prefix+"-submit-confirm");
@@ -1043,15 +1053,19 @@
         $submitBn : $("a[type='submit']",$form).length ? $("a[type='submit']",$form) : $("input[type='submit']",$form),
         errClass  : $form.attr(prefix+"-error-class")||"error-text",
         errTag    : $form.attr(prefix+"-error-tag")||"span",
-        autocomp  : $form.attr(prefix+"-autocomplete")||"on"
+        autocomp  : $form.attr(prefix+"-autocomplete")||"on",
+        noScroll  : typeof $form.attr(prefix+"-noscroll") != "undefined"
       };
     }
-    function setFirstErrorMessage($form, message, reset){
-      if(!$form.data("firstError") || reset)
-        $form.data("firstError",message);
+    function setFirstErrorMessage($form, message, elem, errorId){
+      if(!$form.data("firstError"))
+        $form.data("firstError", {'m':message,'e':elem,'i':errorId});
     }
     function getFirstErrorMessage($form){
       return $form.data("firstError");
+    }
+    function resetFirstErrorMessage($form){
+        $form.data("firstError", 0);
     }
   };
   wx.validator.config = {
