@@ -966,7 +966,23 @@
         }
       });
       $thisForm.data("hasValidator",true);
+      wx.validator[$thisForm.attr("name")] = new FormValidator($thisForm);
     }
+
+    function FormValidator(form){
+      this.$thisForm  = form;
+      this.formInfo   = getFormInnerElement(form);
+    }
+    FormValidator.prototype.valid = function(){
+      this.$thisForm.data("valid",true);
+      this.formInfo.$input.each(function(){
+        $(this).trigger($(this).attr(prefix+"-event-type")||"blur");
+      });
+      this.formInfo.$select.trigger("blur");
+      this.formInfo.$checkbox.trigger("blur");
+      return this.$thisForm.data("valid");
+    };
+
     function checkAll(event, isNoConfirm) {
       var $thisForm  = $(this),
           isAjax     = typeof $thisForm.attr(prefix+"-ajax") !== "undefined" ? "&ajax=1" : "",
