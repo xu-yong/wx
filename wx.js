@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.3.1";
+  wx.VERSION = "1.3.2";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -825,7 +825,7 @@
             setFirstErrorMessage($thisForm,$this.attr(thisAttr["me"]),$this,thisAttr["me"]);
             if(!thisAttr["nt"]){
               if($("#"+thisAttr["me"]).length){
-                $("#"+thisAttr["me"]).show();
+                $("#"+thisAttr["me"],$thisForm).show();
               } else if($this.attr(thisAttr["me"])){
                 if(thisAttr["st"] === "pop")
                   wx.alert($this.attr(thisAttr["me"]));
@@ -853,7 +853,7 @@
             setFirstErrorMessage($thisForm,thisAttr["me"],$thisCheckbox,thisAttr["nc"]);
             if(!thisAttr["nt"]){
               if($("#"+thisAttr["nc"]).length){
-                $("#"+thisAttr["nc"]).show();
+                $("#"+thisAttr["nc"],$thisForm).show();
               } else {
                 if(thisAttr["st"] === "pop")
                   wx.alert(thisAttr["me"]);
