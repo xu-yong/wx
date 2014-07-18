@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.3.2";
+  wx.VERSION = "1.3.3";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -1146,7 +1146,7 @@
       return value.length === 0 || value <= parseFloat(param);
     },
     rangeEqual: function(value, param) {
-      return  value.length === 0 ||  value.length === param.length;
+      return  value.length === 0 ||  value.length === parseInt(param);
     },
     rangelength: function(value, param) {
       param = param.split("-");
@@ -1169,7 +1169,7 @@
       return value.length === 0 || value.getBytes() <= parseInt(param);
     },
     byteRangeEqual: function(value, param) {
-      return  value.length === 0 ||  value.getBytes() === param.length;
+      return  value.length === 0 ||  value.getBytes() === parseInt(param);
     },
     equalTo: function(value, equalToElement) {
       return value.length === 0 || value.length>0 && value === $("input[name='"+equalToElement+"']").val();
