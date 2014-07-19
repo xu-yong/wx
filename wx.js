@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.3.3";
+  wx.VERSION = "1.3.4";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -1181,7 +1181,7 @@
       return value.length === 0 || /^[0-9]{6}$/.test(value);
     },
     cardId: function(value) {
-      return value.length === 0 || /^(\d{18,18}|\d{15,15}|\d{17,17}x)$/.test(value);
+      return value.length === 0 || /^(\d{18,18}|\d{15,15}|\d{17,17}[xX])$/.test(value);
     },
     passport: function(value) {
       return value.length === 0 || /^1[45][0-9]{7}$|^G[0-9]{8}$|^P[0-9]{7}$|^S[0-9]{7,8}$|^D[0-9]+$/.test(value);
