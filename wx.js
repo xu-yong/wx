@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.3.4";
+  wx.VERSION = "1.3.7";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -806,9 +806,11 @@
       $thisForm.attr("autocomplete","off");
       $("a[type='submit']",$thisForm).click($.proxy(checkAll,this));
       $thisForm.submit($.proxy(checkAll,this));
-      formInfo.$input.filter(":visible :last").keydown(function(event) {
-        if(event.keyCode === 13) $thisForm.submit();
-      });
+      if(formInfo.entSubmit === "on"){
+        formInfo.$input.filter(":visible :last").keydown(function(event) {
+          if(event.keyCode === 13) $thisForm.submit();
+        });
+      }
       formInfo.$select.each(function(){
         var $thisSelect = $(this),
             thisAttr    = {"va" : $thisSelect.attr(prefix+"-error-value"),
@@ -816,15 +818,18 @@
                            "st" : $thisSelect.attr(prefix+"-show-type") || "normal",
                            "su" : $("#"+prefix+"-"+$thisSelect.attr("name")+"-success",$thisForm),
                            "nt" : typeof $thisSelect.attr(prefix+"-notip") !== "undefined"};
-
+        if(!thisAttr['va']) return;
         $thisSelect.blur(function(){
           var $this = $(this);
           $("#"+thisAttr["me"]).hide();
           thisAttr["su"].hide();
+          $("#"+formInfo.singleErr).text("");
           if(wx.trim($this.val()) === wx.trim(thisAttr["va"])){
             setFirstErrorMessage($thisForm,$this.attr(thisAttr["me"]),$this,thisAttr["me"]);
             if(!thisAttr["nt"]){
-              if($("#"+thisAttr["me"]).length){
+              if(formInfo.singleErr !== 'off'){
+                $("#"+formInfo.singleErr).text($this.attr(thisAttr["me"]));
+              } else if($("#"+thisAttr["me"]).length){
                 $("#"+thisAttr["me"],$thisForm).show();
               } else if($this.attr(thisAttr["me"])){
                 if(thisAttr["st"] === "pop")
@@ -852,7 +857,9 @@
           if(!$thisCheckbox.is(":checked") && thisAttr["me"]){
             setFirstErrorMessage($thisForm,thisAttr["me"],$thisCheckbox,thisAttr["nc"]);
             if(!thisAttr["nt"]){
-              if($("#"+thisAttr["nc"]).length){
+              if(formInfo.singleErr !== 'off'){
+                $("#"+formInfo.singleErr).text(thisAttr["me"]);
+              } else if($("#"+thisAttr["nc"]).length){
                 $("#"+thisAttr["nc"],$thisForm).show();
               } else {
                 if(thisAttr["st"] === "pop")
@@ -920,6 +927,7 @@
 
             $("[id^='"+thisAttr["na"]+"']",$thisForm).not("#"+thisAttr["na"]+"left").hide();
             $inputSucc.hide();
+            $("#"+formInfo.singleErr).text("");
 
             $.each(thisAttr["ru"].split("|"),function(i,n){
               if(wx.validator.rule[n] && !wx.validator.rule[n](inputValue,inputParam[i] || "")){
@@ -928,7 +936,9 @@
                 inputValid = false;
                 setFirstErrorMessage($thisForm,errorText,$thisInput,errorFlag);
                 if(!thisAttr["nt"]){
-                  if($inputErro.length){
+                  if(formInfo.singleErr !== 'off'){
+                    $("#"+formInfo.singleErr).text(errorText);
+                  } else if($inputErro.length){
                     $inputErro.show();
                   } else if($("#"+errorFlag,$thisForm).length){
                     $("#"+errorFlag,$thisForm).show();
@@ -1012,7 +1022,9 @@
             $submitErr.show();
           else
              wx.alert(message);
-        } else if(typeof formInfo.$submitBn.attr(prefix+"-get-error") !== "undefined"){
+        } else if(formInfo.singleErr){
+          $("#"+formInfo.singleErr).text(getFirstErrorMessage($thisForm).m);
+        }else if(typeof formInfo.$submitBn.attr(prefix+"-get-error") !== "undefined"){
           wx.alert(getFirstErrorMessage($thisForm).m);
         }
         if(!formInfo.noScroll){
@@ -1070,6 +1082,8 @@
         errClass  : $form.attr(prefix+"-error-class")||"error-text",
         errTag    : $form.attr(prefix+"-error-tag")||"span",
         autocomp  : $form.attr(prefix+"-autocomplete")||"on",
+        entSubmit : $form.attr(prefix+"-entersubmit")||"on",
+        singleErr : $form.attr(prefix+"-single-error")||"off",
         noScroll  : typeof $form.attr(prefix+"-noscroll") != "undefined"
       };
     }
@@ -1130,7 +1144,7 @@
       return value.length === 0 || /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
     },
     mobile: function(value){
-      return value.length === 0 || /^1[3|4|5|8][0-9]\d{8}$/.test(value);
+      return value.length === 0 || /^1[3|4|5|7|8][0-9]\d{8}$/.test(value);
     },
     telphone: function(value){
       return value.length === 0 || /^(\d{3}-\d{8}|\d{4,5}-\d{7,8})$/.test(value);

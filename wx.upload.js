@@ -151,7 +151,7 @@
 
         function bindEvent(xhr){
             if(options.progress){
-                xhr.addEventListener("progress", function(evt){
+                xhr.upload.addEventListener("progress", function(evt){
                     if (evt.lengthComputable) {
                       options.progress(Math.round(evt.loaded * 100 / evt.total).toString(),$input);
                     } else {
