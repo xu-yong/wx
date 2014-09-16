@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.3.7";
+  wx.VERSION = "1.4.0";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -347,12 +347,8 @@
         opts = callback;
     opts = opts || {};
 
-    var $temp = $('<div>'+wx.config.loading+'</div>'),
-      content = $.type(callback) === "string" ? callback : (opts.text ? opts.text : null);
-    if(content)
-      $("[wx-pop-content]",$temp).html(content);
-
-    return _pop($temp.html(),callback,opts);
+    opts.content = $.type(callback) === "string" ? callback : (opts.text ? opts.text : null);
+    return _pop(wx.tpl(wx.config.loading,opts),callback,opts);
   };
 
   /**
@@ -369,16 +365,10 @@
       opts = callback;
     opts = opts || {};
 
-    var $temp = $('<div>'+wx.config.alert+'</div>');
-    $("[wx-pop-content]",$temp).html(content);
-    if(opts.title)
-      $("[wx-pop-title]",$temp).text(opts.title);
-    if(opts.okText)
-      $("[wx-pop-ok]",$temp).text(opts.okText);
-    if(opts.noBtn)
-      $("[wx-pop-close]",$temp).remove();
+    opts.content = content;
+    wx.config.alert = _configTplTranslate(wx.config.alert);
 
-    return _pop($temp.html(),callback,opts);
+    return _pop(wx.tpl(wx.config.alert,opts),callback,opts);
   };
 
   /**
@@ -394,21 +384,17 @@
       opts = callback;
     opts = opts || {};
 
-    var confirmPop,$temp = $('<div>'+wx.config.confirm+'</div>');
-    $("[wx-pop-content]",$temp).html(content);
-    if(opts.title)
-      $("[wx-pop-title]",$temp).text(opts.title);
-    if(opts.okText)
-      $("[wx-pop-ok]",$temp).text(opts.okText);
+    opts.content = content;
+    wx.config.confirm = _configTplTranslate(wx.config.confirm);
 
     opts.shown = function(){
       $("#Js-confirm-ok").click(function(){
         if($.isFunction(callback))
           callback();
-        confirmPop.close();
+        wx.popClose();
       });
     };
-    confirmPop = _pop($temp.html(),opts);
+    return _pop(wx.tpl(wx.config.confirm,opts),callback,opts);
   };
 
   /**
@@ -444,6 +430,11 @@
     }
     return _pop(temp,callback,opts);
   };
+
+  //解决弹出模板问题
+  function _configTplTranslate(string){
+    return string.replace('<%',wx.config.tplOpenTag).replace('%>',wx.config.tplCloseTag);
+  }
 
   //弹框的核心方法
 	function _pop(content, callback, opts) {
@@ -787,6 +778,73 @@
       });
       $("body").append(flash);
     }
+  };
+
+  /**
+   * 模板引擎
+   * @name    tpl
+   * @param   {String}  所要使用的模板，可以是id也可以是字符串
+   * @param   {String}  需要结合的数据
+   * @param   {String}  模板和数据结合后将append到这个元素里
+  */
+  wx.tpl = function(template,data,appendEle){
+    wx.tpl.cache = wx.tpl.cache || {};
+    if(!wx.tpl.cache[template]){
+      var content    = template,
+          match      = null,
+          lastcursor = 0,
+          codeStart  = 'var c = [];',
+          codeEnd    = 'return c.join("");',
+          param      = "",
+          compileTpl = "",
+          checkEXP   = /(^( )?(if|for|else|switch|case|continue|break|{|}))(.*)?/g,
+          searchEXP  = new RegExp(wx.config.tplOpenTag+"(.*?)"+wx.config.tplCloseTag+"?","g"),
+          replaceEXP = /[^\w$]+/g;
+
+      if(template.charAt(0) === "#")
+        content = $(template).text();
+      else
+        content = template;
+
+      while(match = searchEXP.exec(content)){
+        var b = RegExp.$1;
+        var c = content.substring(lastcursor,match.index);
+        c = _formatString(c);
+        compileTpl += 'c.push("'+c+'");\n';
+        if(checkEXP.test(b)){
+          compileTpl += b;
+        }
+        else{
+          compileTpl += 'c.push('+b+');\n';
+        }
+        _setVar(b);
+        lastcursor = match.index+match[0].length;
+      }
+      compileTpl+= 'c.push("'+wx.trim(_formatString(content.substring(lastcursor)))+'");';
+      wx.tpl.cache[template] = new Function('data','helper',param+codeStart+compileTpl+codeEnd);
+    }
+
+    var result = wx.tpl.cache[template].call(null,data,wx.tpl.helperList);
+    if(appendEle){
+     $(appendEle).append(result);
+    }
+
+    function _formatString(s){
+      return s.replace(/^\s*|\s*$/gm, '').replace(/[\n\r\t\s]+/g, ' ').replace(/"/gm,'\\"');
+    }
+
+    function _setVar(code){
+      code = code.replace(replaceEXP,',').split(',');
+      for(var i=0,l=code.length;i<l;i++){
+        code[i] = code[i].replace(checkEXP,'');
+        if(!code[i].length) continue;
+        if(wx.tpl.helperList && code[i] in wx.tpl.helperList)
+          param += code[i]+' = helper.'+code[i]+';';
+        else
+          param += 'var '+code[i]+' = data.'+code[i]+';';
+      }
+    }
+    return result;
   };
 
   /**

@@ -60,11 +60,17 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
     //ajax请求返回数据中用于获得跳转地址的字段
     dataJumpFlag : 'jump',
 
+    //模板引擎解析时使用的开始标示符
+    tplOpenTag : "<%",
+
+    //模板引擎解析时使用的结束标示符
+    tplCloseTag : "%>",
+
     //弹出框loading结构
     loading: '<table class="ui-dialog">\
       <tbody>\
           <td class="ui-dialog-body">\
-            <div class="ui-dialog-content" wx-pop-content>&nbsp;&nbsp;&nbsp;请等待...</div>\
+            <div class="ui-dialog-content"><%content||"&nbsp;&nbsp;&nbsp;请等待..."%></div>\
           </td>\
         </tr>\
       </tbody>\
@@ -75,19 +81,23 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
       <tbody>\
         <tr class="title">\
           <td class="ui-dialog-header">\
-            <button class="ui-dialog-close Js-pop-close" wx-pop-close title="取消">×</button>\
-            <div x-pop-title class="ui-dialog-title">消息</div>\
+            <%if(!noBtn){%>\
+              <button class="ui-dialog-close Js-pop-close" title="取消">×</button>\
+            <%}%>\
+            <div class="ui-dialog-title"><%title||"提示"%></div>\
           </td>\
         </tr>\
         <tr>\
           <td class="ui-dialog-body">\
-            <div class="ui-dialog-content" wx-pop-content></div>\
+            <div class="ui-dialog-content"><%content%></div>\
           </td>\
         </tr>\
         <tr>\
           <td class="ui-dialog-footer">\
             <div class="ui-dialog-button">\
-              <button class="ui-dialog-autofocus Js-pop-close" wx-pop-ok type="button">确 定</button>\
+            <%if(!noBtn){%>\
+              <button class="ui-dialog-autofocus Js-pop-close" type="button"><%okText||"确 定"%></button>\
+            <%}%>\
             </div>\
           </td>\
         </tr>\
@@ -99,20 +109,20 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
       <tbody>\
         <tr class="title">\
           <td class="ui-dialog-header">\
-            <button class="ui-dialog-close Js-pop-close" wx-pop-close title="取消">×</button>\
-            <div x-pop-title class="ui-dialog-title">消息</div>\
+            <button class="ui-dialog-close Js-pop-close" title="取消">×</button>\
+            <div class="ui-dialog-title"><%title||"消息"%></div>\
           </td>\
         </tr>\
         <tr>\
           <td class="ui-dialog-body">\
-            <div class="ui-dialog-content" wx-pop-content></div>\
+            <div class="ui-dialog-content"><%content%></div>\
           </td>\
         </tr>\
         <tr>\
           <td class="ui-dialog-footer">\
             <div class="ui-dialog-button">\
               <button class="Js-pop-close" type="button">取消</button>\
-              <button id="Js-confirm-ok" class="ui-dialog-autofocus Js-pop-close" wx-pop-ok type="button">确 定</button>\
+              <button id="Js-confirm-ok" class="ui-dialog-autofocus" type="button"><%okText||"确 定"%></button>\
             </div>\
           </td>\
         </tr>\
