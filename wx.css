@@ -11,124 +11,25 @@
 *   http://www.opensource.org/licenses/mit-license.php
 */
 
-.ui-dialog {
-    *zoom:1;
-    _float: left;
-    position: relative;
-    background-color: #FFF;
-    border: 1px solid #999;
-    border-radius: 6px;
-    outline: 0;
-    font-size: 14px;
-    color: #333;
-    width:300px;
-}
-.ui-dialog-title {
-    margin: 0;
-    line-height: 1.428571429;
-    min-height: 16.428571429px;
-    padding: 15px;
-    overflow:hidden; 
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-weight: bold;
-}
-.ui-dialog-header {
-    white-space: nowrap;
-    border-bottom: 1px solid #E5E5E5;
-}
-.ui-dialog-body {
-    padding: 20px;
-    text-align: center;
-}
-.ui-dialog-content {
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
-    *zoom: 1;
-    *display: inline;
-    text-align: left;
-    word-break: break-all;
-}
-.ui-dialog-close {
-    position: relative;
-    _position: absolute;
-    float: right;
-    top: 13px;
-    right: 13px;
-    _height: 26px;
-    padding: 0 4px;
-    font-size: 21px;
-    font-weight: bold;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #FFF;
-    opacity: .2;
-    filter: alpha(opacity=20);
-    cursor: pointer;
-    background: transparent;
-    _background: #FFF;
-    border: 0;
-    -webkit-appearance: none;
-}
+.pop-bg {background: url("../images/common/bg-pop.png") repeat scroll 0 0 rgba(0, 0, 0, 0); left: 0; position: absolute; top: 0; z-index: 20; } 
+.pop-container{position: absolute; z-index:21;}
+.ui-dialog {*zoom:1; _float: left; position: relative; background-color: #FFF; border: 1px solid #999; border-radius: 6px; outline: 0; font-size: 14px; color: #333; width:300px; }
+.ui-dialog-title {margin: 0; line-height: 1.428571429; min-height: 16.428571429px; padding: 15px; overflow:hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: bold; }
+.ui-dialog-header {white-space: nowrap; border-bottom: 1px solid #E5E5E5; }
+.ui-dialog-body {padding: 20px; text-align: center; }
+.ui-dialog-content {display: inline-block; position: relative; vertical-align: middle; *zoom: 1; *display: inline; text-align: left; word-break: break-all; }
+.ui-dialog-close {position: relative; _position: absolute; float: right; top: 13px; right: 13px; _height: 26px; padding: 0 4px; font-size: 21px; font-weight: bold; line-height: 1; color: #000; text-shadow: 0 1px 0 #FFF; opacity: .2; filter: alpha(opacity=20); cursor: pointer; background: transparent; _background: #FFF; border: 0; -webkit-appearance: none; }
 .ui-dialog-close:hover,
-.ui-dialog-close:focus {
-    color: #000000;
-    text-decoration: none;
-    cursor: pointer;
-    outline: 0;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
-}
-.ui-dialog-button {
-    float: right;
-    white-space: nowrap;
-}
-.ui-dialog-footer button+button {
-    margin-bottom: 0;
-    margin-left: 5px;
-}
-.ui-dialog-footer button {
-    width:auto;
-    overflow:visible;
-    display: inline-block;
-    padding: 6px 12px;
-    _margin-left: 5px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: normal;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-.ui-dialog-footer button {
-    background-color: #FFFFFF;
-    border-color: #CCCCCC;
-    color: #333333;
-}
-.ui-dialog-footer {
-    padding: 0 15px 15px;
-}
-.ui-dialog-footer button.ui-dialog-autofocus {
-  color: #ffffff;
-  background-color: #428bca;
-  border-color: #357ebd;
-}
+.ui-dialog-close:focus {color: #000000; text-decoration: none; cursor: pointer; outline: 0; opacity: 0.5; filter: alpha(opacity=50); }
+.ui-dialog-button {float: right; white-space: nowrap; }
+.ui-dialog-footer button+button {margin-bottom: 0; margin-left: 5px; }
+.ui-dialog-footer button {width:auto; overflow:visible; display: inline-block; padding: 6px 12px; _margin-left: 5px; margin-bottom: 0; font-size: 14px; font-weight: normal; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; background-image: none; border: 1px solid transparent; border-radius: 4px; }
+.ui-dialog-footer button {background-color: #FFFFFF; border-color: #CCCCCC; color: #333333; }
+.ui-dialog-footer {padding: 0 15px 15px; }
+.ui-dialog-footer button.ui-dialog-autofocus {color: #ffffff; background-color: #428bca; border-color: #357ebd; }
 .ui-dialog-footer button.ui-dialog-autofocus:hover,
 .ui-dialog-footer button.ui-dialog-autofocus:focus,
-.ui-dialog-footer button.ui-dialog-autofocus:active {
-  color: #ffffff;
-  background-color: #3276b1;
-  border-color: #285e8e;
-}
+.ui-dialog-footer button.ui-dialog-autofocus:active {color: #ffffff; background-color: #3276b1; border-color: #285e8e; }
 .ui-dialog-footer button:hover,
 .ui-dialog-footer button:focus,
-.ui-dialog-footer button:active {
-  color: #333333;
-  background-color: #ebebeb;
-  border-color: #adadad;
-}
+.ui-dialog-footer button:active {color: #333333; background-color: #ebebeb; border-color: #adadad; }

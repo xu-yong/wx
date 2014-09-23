@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.4.0";
+  wx.VERSION = "1.4.1";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -459,7 +459,7 @@
     $(".Js-pop").stop().remove();
     var htmlText = content;
     var temp = _getShadeLayer("Js-pop")+
-                "<div id='Js-pop-body' class='Js-pop' style='position: absolute; z-index:21'>"+
+                "<div id='Js-pop-body' class='Js-pop pop-container'>"+
                   htmlText+
                 "</div>";
     $("body").append(temp).keyup(function(event){
@@ -627,7 +627,7 @@
    //获得蒙版层
   function _getShadeLayer(layerClass) {
     var window_height = $('body').outerHeight() > _winHeight?$('body').outerHeight() : _winHeight;
-    return '<div id="Js-shadeLayer" class="'+layerClass+' pop-bg ie6fixpic" style="width:'+_winWidth+'px;height:'+window_height+'px;"></div>';
+    return '<div id="Js-shadeLayer" class="'+layerClass+' pop-bg" style="width:'+_winWidth+'px;height:'+window_height+'px;"></div>';
   }
 
   /**
