@@ -323,7 +323,9 @@
         if(backData[wx.config.dataFlag] == wx.config.dataDefaultAlertVal && (options.alertPrompt !== undefined ? options.alertPrompt : true)){
           wx.alert(backData.message || backData.info,function(){if(callback) callback.call(options.context || _this, backData, options.extData);});
         } else {
-          if(callback)
+          if(callback === wx.RELOAD)
+            location.reload();
+          else if($.isFunction(callback))
             callback.call(options.context||_this, backData, options.extData);
         }
       },error:function(xhr, textStatus, errorThrown) {
@@ -394,7 +396,7 @@
         wx.popClose();
       });
     };
-    return _pop(wx.tpl(wx.config.confirm,opts),callback,opts);
+    return _pop(wx.tpl(wx.config.confirm,opts),opts);
   };
 
   /**
@@ -837,7 +839,7 @@
       code = code.replace(replaceEXP,',').split(',');
       for(var i=0,l=code.length;i<l;i++){
         code[i] = code[i].replace(checkEXP,'');
-        if(!code[i].length) continue;
+        if(!code[i].length || /^\d+$/.test(code[i])) continue;
         if(wx.tpl.helperList && code[i] in wx.tpl.helperList)
           param += code[i]+' = helper.'+code[i]+';';
         else
