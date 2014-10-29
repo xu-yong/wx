@@ -1,7 +1,7 @@
 /**
 * wx.css
 *
-* 用于弹框的css样式
+* 框架里所需要使用的css样式
 *
 * @author xuyong <xuyong@ucfgroup.com>
 * @createTime 2014-03-18
@@ -11,6 +11,9 @@
 *   http://www.opensource.org/licenses/mit-license.php
 */
 
+/*
+    弹框
+*/
 .pop-bg {background: url("../images/common/bg-pop.png") repeat scroll 0 0 rgba(0, 0, 0, 0); left: 0; position: absolute; top: 0; z-index: 20; } 
 .pop-container{position: absolute; z-index:21;}
 .ui-dialog {*zoom:1; _float: left; position: relative; background-color: #FFF; border: 1px solid #999; border-radius: 6px; outline: 0; font-size: 14px; color: #333; width:300px; }
@@ -33,3 +36,8 @@
 .ui-dialog-footer button:hover,
 .ui-dialog-footer button:focus,
 .ui-dialog-footer button:active {color: #333333; background-color: #ebebeb; border-color: #adadad; }
+
+/*
+    IE10以下对placeholder的支持
+*/
+.wx-placeholder{color:gray; padding-left: 10px; padding-top: 10px; display: none;}

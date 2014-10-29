@@ -16,14 +16,14 @@
 (function(window, document, $, undefined){
   "use strict";
 
-  var _winWidth   = $(window).width(),
-      _winHeight  = $(window).height(),
+  var _winWidth   = window.screen.width,
+      _winHeight  = window.screen.height,
       _globalData = {};
       
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.4.1";
+  wx.VERSION = "1.4.5";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -457,6 +457,11 @@
       callback = function(){
         location.href = jumpUrl;
       };
+    }
+    //立刻执行回调函数，不弹出浮框
+    if(opts.notPop){
+      callback();
+      return;
     }
     $(".Js-pop").stop().remove();
     var htmlText = content;
@@ -952,27 +957,21 @@
         if(thisAttr["ph"]){
           if('placeholder' in this){
             $thisInput.attr("placeholder",thisAttr["ph"]);
-            $thisForm.data("placeholder",true);
+            $thisInput.next('.wx-placeholder').remove();
           } else {
-            $thisForm.data("placeholder",false);
-            $thisInput.css("color","gray");
-            if(!$thisInput.val())
-                $thisInput.val(thisAttr["ph"]);
-            $thisInput.bind("click focus",function(){
-              if($thisInput.val() === thisAttr["ph"])
-                $thisInput.val("");
-            });
-            $thisInput.blur(function(){
-              if($thisInput.val().length === 0){
-                $thisInput.css("color","gray");
-                $thisInput.val(thisAttr["ph"]);
-              }
-            });
-            $thisInput.bind("propertychange",function(){
-              if($thisInput.val() === thisAttr["ph"])
-                $thisInput.css("color","gray");
+            var $inputNotice = $thisInput.next('.wx-placeholder').length ?
+                               $thisInput.next('.wx-placeholder') :
+                               $('<span class="wx-placeholder" style="position:absolute;top:'+$thisInput.position().top+'px;left:'+($thisInput.position().left+3)+'px">'+thisAttr["ph"]+'</span>');
+            $inputNotice.click(function(){
+              $thisInput.focus();
+            })
+            $thisInput.after($inputNotice);
+            $inputNotice.show();
+            $thisInput.bind("propertychange input blur",function(){
+              if($thisInput.val().length)
+                $inputNotice.hide();
               else
-                $thisInput.css("color","black");
+                $inputNotice.show();
             });
           }
         }
@@ -1065,8 +1064,6 @@
       formInfo.$input.each(function(){
         var $thisInput = $(this);
         $thisInput.trigger($thisInput.attr(prefix+"-event-type")||"blur");
-        if(!$thisForm.data("placeholder") && $thisInput.val() === $thisInput.attr(prefix+"-placeholder"))
-          $thisInput.val("");
       });
       formInfo.$select.trigger("blur");
       formInfo.$checkbox.trigger("blur");
@@ -1114,23 +1111,21 @@
           event.preventDefault();
           if(handleAjax){
             wx.sendData(action,$thisForm.serialize()+isAjax,function(ajData){
-              if(ajData[wx.config.dataFlag] == wx.config.dataSuccessVal)
-                wx.alert(ajData.info||ajData.message||wx.config.dataInfo,handleAjax.toUpperCase() === "JUMP" ? ajData[wx.config.dataJumpFlag] : wx[handleAjax.toUpperCase()]);
-              else
-                wx.alert(ajData.info||ajData.message||wx.config.dataInfo);
+              if(ajData[wx.config.dataFlag] == wx.config.dataSuccessVal){
+                var ajaxAction = handleAjax.split("-");
+                wx.alert(ajData.info||ajData.message||ajData[wx.config.dataInfo],ajaxAction[0].toUpperCase() === "JUMP" ? ajData[wx.config.dataJumpFlag] : wx[ajaxAction[0].toUpperCase()],{notPop:ajaxAction.length===2});
+              }
+              else{
+                wx.alert(ajData.info||ajData.message||ajData[wx.config.dataInfo]);
+              }
             });
           } else{
             wx.sendData(action,$thisForm.serialize()+isAjax,$.isFunction(window[callback]) ? window[callback] : undefined);
           }
+        } else {
+          if(event.currentTarget.nodeType === 1)
+            $thisForm.off('submit').submit();
         }
-      }
-      if(!$thisForm.data("placeholder")) {
-        formInfo.$input.each(function(){
-          var $thisInput  = $(this),
-              placeholder = $thisInput.attr(prefix+"-placeholder");
-          if($thisInput.val().length === 0 && placeholder)
-            $thisInput.val(placeholder);
-        });
       }
     }
     function getFormInnerElement($form){

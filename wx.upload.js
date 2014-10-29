@@ -73,39 +73,43 @@
     function complete(responseText, options, $input) {
         try{
             var data = $.parseJSON(responseText);
-            if(options.assign && data[wx.config.dataFlag] == wx.config.dataSuccessVal){
-                var assign = options.assign.split("&");
-                for(var i = 0; i<assign.length; i++){
-                    var assVal     = "",
-                        assignItem = assign[i].split("="),
-                        $inputAss  = $("input[name='"+assignItem[0]+"']");
-                    assVal = eval('data["'+assignItem[1].replace(/\./g,'"]["')+'"]');
-                    if($inputAss.length)
-                        $inputAss.val(assVal);
-                    else
-                        $input.before('<input name="'+assignItem[0]+'" value="'+assVal+'" style="display:none;">');
-                }
-            }
-            if(options.set && data[wx.config.dataFlag] == wx.config.dataSuccessVal){
-                var set   = options.set.split("&");
-                for(var i = 0; i<set.length; i++){
-                    var setVal  = "",
-                        setItem = set[i].split("="),
-                        $elem   = $("#"+setItem[0]);
-                    if($elem.length){
-                        setVal = eval('data["'+setItem[1].replace(/\./g,'"]["')+'"]');
-                        setVal += setVal.indexOf("?") !== -1 ? "&_"+new Date().getTime() : "?_="+new Date().getTime();
-                        if($elem.is("img"))
-                            $elem.attr("src",setVal);
+            if(data[wx.config.dataFlag] == wx.config.dataSuccessVal){
+                if(options.assign){
+                    var assign = options.assign.split("&");
+                    for(var i = 0; i<assign.length; i++){
+                        var assVal     = "",
+                            assignItem = assign[i].split("="),
+                            $inputAss  = $("input[name='"+assignItem[0]+"']");
+                        assVal = eval('data["'+assignItem[1].replace(/\./g,'"]["')+'"]');
+                        if($inputAss.length)
+                            $inputAss.val(assVal);
                         else
-                            $elem.css("background","url("+setVal+")");
+                            $input.before('<input name="'+assignItem[0]+'" value="'+assVal+'" style="display:none;">');
                     }
                 }
+                if(options.set){
+                    var set   = options.set.split("&");
+                    for(var i = 0; i<set.length; i++){
+                        var setVal  = "",
+                            setItem = set[i].split("="),
+                            $elem   = $("#"+setItem[0]);
+                        if($elem.length){
+                            setVal = eval('data["'+setItem[1].replace(/\./g,'"]["')+'"]');
+                            setVal += setVal.indexOf("?") !== -1 ? "&_"+new Date().getTime() : "?_="+new Date().getTime();
+                            if($elem.is("img"))
+                                $elem.attr("src",setVal);
+                            else
+                                $elem.css("background","url("+setVal+")");
+                        }
+                    }
+                }
+                if(options.loading)
+                    wx.popClose();
+                if(options.callback)
+                    options.callback(data,$input);
+            } else {
+                wx.alert(data[wx.config.dataInfo]);
             }
-            if(options.loading)
-                wx.popClose();
-            if(options.callback)
-                options.callback(data,$input);
         }
         catch(e){wx.log("uploadComplete error "+e);}
     }
