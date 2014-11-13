@@ -16,14 +16,14 @@
 (function(window, document, $, undefined){
   "use strict";
 
-  var _winWidth   = window.screen.width,
-      _winHeight  = window.screen.height,
+  var _winWidth   = $(window).width(),
+      _winHeight  = $(window).height(),
       _globalData = {};
       
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.4.5";
+  wx.VERSION = "1.4.6";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -495,6 +495,7 @@
     }
     if(opts.attachBg){
       $("body").css("overflow","hidden");
+      $("#Js-shadeLayer").css("width",$(window).width());
     }
     _popAni("#Js-pop-body",function(){
       _pluginCheck("#Js-pop-body");
@@ -966,7 +967,8 @@
               $thisInput.focus();
             })
             $thisInput.after($inputNotice);
-            $inputNotice.show();
+            if(!$thisInput.val().length)
+              $inputNotice.show();
             $thisInput.bind("propertychange input blur",function(){
               if($thisInput.val().length)
                 $inputNotice.hide();
@@ -1302,7 +1304,7 @@
 
     function checkPos($el){
       var scroll = $(document).scrollTop()+_winHeight;
-      if($el.position().top < scroll+threshold){
+      if($el.offset().top < scroll+threshold){
         $el.trigger('appear');
       }
     }

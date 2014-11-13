@@ -14,7 +14,7 @@
 /*
     弹框
 */
-.pop-bg {background: url("../images/common/bg-pop.png") repeat scroll 0 0 rgba(0, 0, 0, 0); left: 0; position: absolute; top: 0; z-index: 20; } 
+.pop-bg {background: url(../images/common/bg-pop.png); left: 0; position: absolute; top: 0; z-index: 20; } 
 .pop-container{position: absolute; z-index:21;}
 .ui-dialog {*zoom:1; _float: left; position: relative; background-color: #FFF; border: 1px solid #999; border-radius: 6px; outline: 0; font-size: 14px; color: #333; width:300px; }
 .ui-dialog-title {margin: 0; line-height: 1.428571429; min-height: 16.428571429px; padding: 15px; overflow:hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: bold; }
