@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.4.6";
+  wx.VERSION = "1.4.8";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -479,7 +479,7 @@
     _moveAction(".title","#Js-pop-body");
 
     function _close(){
-      if(opts.attachBg) $("body").css("overflow","auto");
+      if(opts.attachBg) $("body").css({"overflow":"auto","position":"static","height":"auto"});
       $("body").unbind("keyup");
       $(".Js-pop-close").unbind("click");
       _closeAni("#Js-pop-body",function(){
@@ -494,8 +494,8 @@
       });
     }
     if(opts.attachBg){
-      $("body").css("overflow","hidden");
-      $("#Js-shadeLayer").css("width",$(window).width());
+      $("body").css({"overflow":"hidden","position":"relative","height":$(window).height()});
+      $("#Js-shadeLayer").css({"width":$(window).width(),"height":$(window).height()});
     }
     _popAni("#Js-pop-body",function(){
       _pluginCheck("#Js-pop-body");
@@ -988,8 +988,8 @@
 
             $("[id^='"+thisAttr["na"]+"']",$thisForm).not("#"+thisAttr["na"]+"left").hide();
             $inputSucc.hide();
+            $thisInput.removeClass("wx-inputErrBorder");
             $("#"+formInfo.singleErr).text("");
-
             $.each(thisAttr["ru"].split("|"),function(i,n){
               if(wx.validator.rule[n] && !wx.validator.rule[n](inputValue,inputParam[i] || "")){
                 var errorFlag = thisAttr["na"]+n,
@@ -999,6 +999,7 @@
                 if(!thisAttr["nt"]){
                   if(formInfo.singleErr !== 'off'){
                     $("#"+formInfo.singleErr).text(errorText);
+                    $(".wx-inputErrBorder").removeClass("wx-inputErrBorder");
                   } else if($inputErro.length){
                     $inputErro.show();
                   } else if($("#"+errorFlag,$thisForm).length){
@@ -1011,6 +1012,7 @@
                   }
                 }
                 $thisForm.data("valid",false);
+                $thisInput.addClass("wx-inputErrBorder");
                 return false;
               }
           });
@@ -1083,6 +1085,8 @@
              wx.alert(message);
         } else if(formInfo.singleErr){
           $("#"+formInfo.singleErr).text(getFirstErrorMessage($thisForm).m);
+          $(".wx-inputErrBorder").removeClass("wx-inputErrBorder");
+          getFirstErrorMessage($thisForm).e.addClass("wx-inputErrBorder");
         }else if(typeof formInfo.$submitBn.attr(prefix+"-get-error") !== "undefined"){
           wx.alert(getFirstErrorMessage($thisForm).m);
         }
@@ -1177,6 +1181,7 @@
     "post"            : "请填写正确的邮编号码",
     "cardId"          : "请填写正确的身份证号码",
     "noSymbol"        : "不能有符号",
+    "date"            : "日期填写不正确",
     "url"             : "请使用正确格式，如http://www.website.com"
   };
 
@@ -1260,6 +1265,9 @@
     noSymbol: function(value) {
       return value.length === 0 || /^[\w|\u4e00-\u9fa5]*$/.test(value);
     },
+    date: function(value) {
+      return value.length === 0 || /^(\d{4})-(\d{2})-(\d{2})$/.test(value);
+    },
     url: function(value){
       return value.length === 0 || /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
     },
@@ -1276,8 +1284,9 @@
   wx.lazyLoad = function(context) {
     var $els = $(context || "body").find("[wx-lz]:visible"),
         showType = wx.config.lazyLoadShowType,
-        threshold  = wx.config.lazyLoadThreshold;
-
+        threshold  = wx.config.lazyLoadThreshold,
+        _height = window.screen.height;
+        
     if(!$els.length) return;
 
     $els.one("appear",function(){
@@ -1303,7 +1312,7 @@
     }
 
     function checkPos($el){
-      var scroll = $(document).scrollTop()+_winHeight;
+      var scroll = $(document).scrollTop()+_height;
       if($el.offset().top < scroll+threshold){
         $el.trigger('appear');
       }

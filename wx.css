@@ -41,3 +41,4 @@
     IE10以下对placeholder的支持
 */
 .wx-placeholder{color:gray; padding-left: 10px; padding-top: 10px; display: none;}
+.wx-inputErrBorder{border-color: red;}
