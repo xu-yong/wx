@@ -127,6 +127,12 @@ if(typeof wx !== "undefined" && typeof jQuery !== "undefined"){
           </td>\
         </tr>\
       </tbody>\
-    </table>'
+    </table>',
+
+    //弹出框通用样式
+     pop:'<div class="ui-dialog">\
+       <div class="ui-dialog-header title"><%title||"消息"%><span class="Js-pop-close ui-dialog-close"></span></div>\
+       <%content%>\
+     </div>'
   });
 }

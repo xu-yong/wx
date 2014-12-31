@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.4.8";
+  wx.VERSION = "1.4.9";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -424,13 +424,14 @@
     var temp;
     if(/^#/.test(content)){
       if(!$(content).length) return;
-      temp = '<div class="pop form" '+(opts.width ? 'style="width:'+opts.width+'"': '')+'>'+$(content).html()+'</div>';
+      temp = _configTplTranslate(wx.config.pop);
       if(opts.removeAfterShow)
        $(content).remove();
     } else{
-      temp = '<div class="pop form" '+(opts.width ? 'style="width:'+opts.width+'"': '')+'>'+content+'</div>';
+      temp = _configTplTranslate(wx.config.pop);
+      
     }
-    return _pop(temp,callback,opts);
+    return _pop(wx.tpl(temp,opts),callback,opts);
   };
 
   //解决弹出模板问题
