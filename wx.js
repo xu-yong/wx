@@ -23,7 +23,7 @@
 	function wx(){}
   window.wx = wx;
 
-  wx.VERSION = "1.4.9";
+  wx.VERSION = "1.4.11";
   //当前页面的module,action和参数
   wx.MODULE  = "";
   wx.ACTION  = "";
@@ -806,12 +806,12 @@
           codeEnd    = 'return c.join("");',
           param      = "",
           compileTpl = "",
-          checkEXP   = /(^( )?(if|for|else|switch|case|continue|break|{|}))(.*)?/g,
+          checkEXP   = /(^( )?(if|for|else|switch|case|continue|break|var|{|}))(.*)?/g,
           searchEXP  = new RegExp(wx.config.tplOpenTag+"(.*?)"+wx.config.tplCloseTag+"?","g"),
           replaceEXP = /[^\w$]+/g;
 
       if(template.charAt(0) === "#")
-        content = $(template).text();
+        content = $(template).html();
       else
         content = template;
 
@@ -819,7 +819,8 @@
         var b = RegExp.$1;
         var c = content.substring(lastcursor,match.index);
         c = _formatString(c);
-        compileTpl += 'c.push("'+c+'");\n';
+        if(c.length)
+          compileTpl += 'c.push("'+c+'");\n';
         if(checkEXP.test(b)){
           compileTpl += b;
         }
@@ -846,7 +847,7 @@
       code = code.replace(replaceEXP,',').split(',');
       for(var i=0,l=code.length;i<l;i++){
         code[i] = code[i].replace(checkEXP,'');
-        if(!code[i].length || /^\d+$/.test(code[i])) continue;
+        if(!code[i].length || checkEXP.test(code[i]) ||/^\d+$/.test(code[i])) continue;
         if(wx.tpl.helperList && code[i] in wx.tpl.helperList)
           param += code[i]+' = helper.'+code[i]+';';
         else
@@ -1183,6 +1184,7 @@
     "cardId"          : "请填写正确的身份证号码",
     "noSymbol"        : "不能有符号",
     "date"            : "日期填写不正确",
+    "money"           : "请填写正确的金额",
     "url"             : "请使用正确格式，如http://www.website.com"
   };
 
@@ -1271,6 +1273,9 @@
     },
     url: function(value){
       return value.length === 0 || /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+    },
+    money: function(value) {
+      return value.length === 0 || /^[0-9]+([.]{1}[0-9]{1,2})?$/.test(value);
     },
     basic:function(value){
       return !/select|update|delete|truncate|join|union|exec|insert|drop|count|'|"|;|>|<|%/i.test(value);
