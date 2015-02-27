@@ -969,7 +969,9 @@
               $thisInput.focus();
             })
             $thisInput.after($inputNotice);
-            if(!$thisInput.val().length)
+            if($thisInput.val().length)
+              $inputNotice.hide();
+            else
               $inputNotice.show();
             $thisInput.bind("propertychange input blur",function(){
               if($thisInput.val().length)
